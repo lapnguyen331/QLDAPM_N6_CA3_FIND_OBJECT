@@ -1,0 +1,254 @@
+html{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+html , body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    height: 100%;
+    padding: 0;
+}
+body, .cursor{
+    cursor: url('assets/cursor/cur.png'),auto;
+    -moz-user-select: none !important;
+    -webkit-touch-callout: none!important;
+    -webkit-user-select: none!important;
+    -khtml-user-select: none!important;
+    -moz-user-select: none!important;
+    -ms-user-select: none!important;
+    user-select: none!important;
+
+}
+
+#game-container {
+    /* position: relative;
+    margin: 20px auto;
+    padding: 10px; */
+    
+   /* 1 nửa 1920x1080 để hiển thị vừa màn hình */
+    /* width: 960px; 
+    height: 540px; 
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); */
+    height: 100vh;
+    background-color: #F4E8A8;
+    margin: 10px;
+}
+/* menu  */
+.menu-sec{
+    height: 100%;
+    background-image: url("assets/bg.jpg");
+    background-size: cover;
+}
+.menu-sec{
+    padding-top: 5%;
+}
+.menu-title{
+    margin-bottom: 30px;
+}
+.gameTitle{
+    font-size: 60px;
+    color: black;
+    margin-bottom: 10px;
+    
+}
+.play-boild{
+    font-family: "Play", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+.play-regular{
+    font-family: "Play", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.menu{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.menu button {
+    margin-top: 15px;
+    width: 300px;
+    height: 50px;
+    color: white;
+    background-color: #80521B;
+    font-size: 20px;
+    font-weight: 600;
+}
+/* game play */
+.game-play-sec{
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.game-board{
+    width: 85%;
+    /* background-color: red; */
+}
+.play-space-container{
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #ccc;
+    height: 600px; 
+    /* width: 100%; */
+    margin: 0 30px;
+}
+.play-space{
+    position: relative;  
+    height: 600px; 
+    background-repeat: no-repeat;
+    background-size: cover
+}
+.play-space img{
+    opacity: 0.8; 
+    /* filter: blur(2px); */
+    /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); */
+}
+#random-image {
+    width: 100%;
+    height: 100%;
+}
+.game-tool{
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    margin: 0 30px;
+    align-items: center;
+}
+.req-space{
+   
+    width: 100%;
+    height: 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 80px);
+    column-gap: 15px;
+
+     
+}
+.req-space img{
+    width: 80px; /* Chiều rộng mong muốn */
+    height: 80px; /* Chiều cao mong muốn */
+    object-fit: cover; /* Cắt ảnh nếu tỷ lệ khung hình không phù hợp */
+    border: 3px solid brown;
+    border-radius: 20px;
+}
+
+/* game infor */
+.game-infor{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    width: 15%;
+    background-color: #cb995c;
+}
+.timer{
+    display: flex;
+    flex-direction: row;
+    height: 10%;
+    background-color: #884e07;
+    align-items: center;
+    width: 100%;
+    border: 2px solid black;
+
+}
+.time{
+    color: white;
+    font-size: 30px;
+    padding-left: 20px;
+}
+.time-icon img{
+    background-color: #884e07;
+}
+.player-num{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 8%;
+    background-color: #cb995c;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+.curr-level{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background-color: #cb995c;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+.player-joined{
+    width: 100%;
+    height: 65%;
+    
+    background-color: #cb995c;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+.player-sec{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 10%;
+    background-color: #884e07;
+    text-align: center;
+    justify-content: space-around;
+    margin-bottom: 5px;
+    border: 2px solid black;
+}
+.avartar{
+    height: 100%;
+    border-radius: 50px;
+    width: 20%;
+}
+.avartar img{
+    height: 100%;
+    border-radius: 50px;
+}
+.player-infor{
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+}
+.score{
+    color: white;
+}
+
+
+.sub-menu{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;  
+    height:10%;  
+
+}
+.sub-menu div{
+    align-items: center; 
+    font-size: 50px;
+    height: 100%;
+    text-align: center;
+}
+.floating-text{
+    position: absolute;
+    pointer-events: none; /* Ngăn không cho sự kiện click trên văn bản */
+    opacity: 1;
+    transition: opacity 1.5s ease, transform 3s ease;
+}
