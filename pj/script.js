@@ -1,9 +1,13 @@
+
+
     const GameStatus = {
-        pause:'2',
-        runing:'1',
-        lose:'3',
-        win:'4',
-        start : 0
+        pause:'pause',
+        runing:'runing',
+        lose:'lose',
+        win:'win',
+        start : 'start',
+        exit : 'exit',
+        default:'default'
     }
      let currLevel = 3; //level : 1,2,3
      const duration = 1*60 //thời gian của game
@@ -172,6 +176,7 @@
     }
     //dùng để chay đồng hồ cát khi hết time
     function runGif(timer) {
+        console.log('chạy gif');
         // Khởi tạo Gifffer khi tài liệu đã tải xong
         window.addEventListener("DOMContentLoaded", function() {
             var gifs = Gifffer(); // Lấy danh sách các GIF
@@ -229,31 +234,7 @@
             boardImg.removeChild(floatingText);
         }, 12000); // Thời gian để hiệu ứng hoàn thành
     }
-    //NOTE luồng game
-    function game(){
-        class Game{
-            constructor(){
-                this.score =0;
-                this.player = new Player()
-                this.status = GameStatus.start
-                this.level =currLevel
-            }
-        }
-        showMenu();
-        playGameProccess()        
-    }
-    //show menu
-    function showMenu(){
-
-    }
-    //chạy logic game
-    function playGameProccess(){
-        // const countdownInterval = setInterval(updateCountdown, 1000);//chạy đếm ngược
-        // randomHiddenObj();
-        // showReObj()
-        // runGif(duration*1000)
-        // clickHandler()
-    }
+   
     //level up
     function levelUp(){
         if(currLevel == 3){
@@ -262,11 +243,151 @@
             currLevel+=1;
         }
     }
-    const countdownInterval = setInterval(updateCountdown, 1000);//chạy đếm ngược
-    randomHiddenObj();
-    showReObj()
-    runGif(duration*1000)
-    clickHandler()
+    function checkHidden(element){
+        return element.classList.contains('hidden');
+    }
+   // Check local storage to see if the game has already been started
+    // function checkGameStatus(parent){
+    //     switch(localStorage.getItem('gamestatus')){
+    //         case 'start':
+    //             checkHidden(parent.menuSec) ? console.log("game start"):parent.menuSec.classList.add('hidden'); 
+    //             checkHidden(parent.gamePlaySec) ? parent.gamePlaySec.classList.remove('hidden'):console.log("game start");
+    //             break;
+    //         case 'pause':
+    //             break;
+    //         case  'exit':
+    //             checkHidden(parent.menuSec)? parent.menuSec.classList.remove('hidden'):console.log('exit game'); 
+    //             checkHidden(parent.gamePlaySec) ? console.log('exit game'): parent.gamePlaySec.classList.add('hidden');
+    //             break;
+    //     }    
+    // }
+    function actionSubmenu(action){
+        switch (action){
+            case 'home':
+                break;
+            case 'pause':
+                break;
+            case 'replay':
+                break;
+        }
+
+    }
+    //bắt đầu vào game 
+    // Check local storage to see if the game has already been started
+    // if (localStorage.getItem('gamestatus')) {
+    //     // Optionally, clear the flag if you want to go back to menu on reload
+    //     localStorage.setItem('gamestatus','exit');
+    //     checkGameStatus()
+    //     // Uncomment the following line if you want to redirect to the menu page
+    //     // window.location.reload(); 
+    // }
+    //  else {
+    //     // Show the menu by default
+    //     menu.style.display = 'block';
+    //     game.style.display = 'none';
+    // }
+
+    // startBut.addEventListener('click',function(){
+    //     console.log("heeh");
+    //     //ẩn đi menu và hiển thị game board lên
+    //     localStorage.setItem('gamestatus','start')
+    //     checkGameStatus()
+    //     playGameProccess();
+    // })
+
+    // NOTE: luồng game
+    class Menu {
+        constructor() {
+            this.menuSec = document.querySelector('.menu-sec')
+             //menu button
+            this.startBut = document.querySelector('.start')
+            console.log(this.startBut);
+            this.tutorialBut = document.querySelector('.tutorial')
+            this.setupBut = document.querySelector('.setup')
+            this.historyBut = document.querySelector('.history')
+            this.aboutBut = document.querySelector('.about')
+            //event
+            this.startBut.addEventListener('click', () => this.startGame());
+            this.tutorialBut.addEventListener('click', () => this.startTuto())
+            this.setupBut.addEventListener('click', () => this.setup())
+            this.historyBut.addEventListener('click', () => this.showHistory())
+            this.aboutBut.addEventListener('click', () => this.about())
+            this.game = null;
+        }
+    
+        startGame() {
+            console.log('start game');
+            localStorage.setItem('gamestatus', 'start'); // Lưu trạng thái
+            this.hide()
+            this.game = new Game(); // Khởi tạo lớp game
+            this.game.initGame();
+        }
+        show(){
+            this.menuSec.classList.remove('hidden')
+        }
+        hide(){
+            this.menuSec.classList.add('hidden')
+        }
+        startTuto(){
+            console.log("tuto nè");
+        }
+        showHistory(){
+            console.log('show history');
+        }
+        about(){
+            console.log('about');
+        }
+        setup(){
+            console.log('setup');
+        }
+    }
+    
+    class Game {
+        constructor() {
+            
+            this.score =0;
+            // this.player = new Player()
+            this.status = GameStatus.default
+            this.level =currLevel
+            this.gameBoard = null;
+            // var countdownInterval =0 
+
+        }
+    
+        initGame() {
+            this.gameBoard = new GameBoard();
+            this.gameBoard.show();
+            this.status= GameStatus.start
+            console.log("chạy init");
+
+            const countdownInterval = setInterval(updateCountdown, 1000);//chạy đếm ngược
+            randomHiddenObj();
+            showReObj()
+            runGif(duration*1000)
+            clickHandler()
+        }
+    }
+    class GameBoard{
+        constructor(){
+            this.gamePlaySec = document.querySelector('.game-play-sec')
+            //submenu ở board game
+            this.homeBut = document.querySelector('.home')
+            this.pauseBut = document.querySelector('.pause')
+            this.replayBut = document.querySelector('.replay')
+        }
+        show(){
+            this.gamePlaySec.classList.remove('hidden')
+        }
+        hide(){
+            this.gamePlaySec.classList.add('hidden')
+        }
+    }
+    // Khởi tạo menu khi trang được tải
+    window.onload = () => {
+       const menu = new Menu();
+
+    };
+    
 
 
 
