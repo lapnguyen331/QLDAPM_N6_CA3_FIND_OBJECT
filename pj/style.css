@@ -10,8 +10,15 @@ html , body {
     margin: 0;
     height: 100%;
     padding: 0;
+    -moz-user-select: none !important;
+-webkit-touch-callout: none!important;
+-webkit-user-select: none!important;
+-khtml-user-select: none!important;
+-moz-user-select: none!important;
+-ms-user-select: none!important;
+user-select: none!important;
 }
-body, .cursor{
+/* body, .cursor, img{
     cursor: url('assets/cursor/cur.png'),auto;
     -moz-user-select: none !important;
     -webkit-touch-callout: none!important;
@@ -21,7 +28,11 @@ body, .cursor{
     -ms-user-select: none!important;
     user-select: none!important;
 
-}
+} */
+ html, .cursor,     img, .icon, .home,.game-infor, button{
+    cursor:url('assets/cursor/cur.png'),auto;
+ }
+
 
 #game-container {
     /* position: relative;
@@ -51,6 +62,44 @@ body, .cursor{
 .menu-title{
     margin-bottom: 30px;
 }
+.menu button:hover{
+    background-color: rgb(231, 241, 211);
+    color: black;
+    /* border: 5px solid rgb(188, 208, 87); */
+    box-shadow: 5px 10px 18px  rgb(208, 87, 206);
+}
+.gameSubTitle{
+    border-right: solid 3px rgba(9, 9, 9, 0.75);
+    white-space: nowrap;
+    overflow: hidden;    
+    font-family: 'Source Code Pro', monospace;  
+    font-size: 28px;
+    color: rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+    font-weight: 700;
+  }
+  
+  /* Animation */
+    .gameSubTitle {
+    animation: animated-text 4s steps(29,end) 1s 1 normal both,
+               animated-cursor 600ms steps(29,end) infinite;
+  }
+  
+  /* text animation */
+  
+  @keyframes animated-text{
+    from{width: 0;}
+    to{width: 472px;}
+  }
+  
+  /* cursor animations */
+  
+  @keyframes animated-cursor{
+    from{border-right-color: rgba(0, 0, 0, 0.75);}
+    to{border-right-color: transparent;}
+  }
+
+
 .gameTitle{
     font-size: 60px;
     color: black;
@@ -81,7 +130,10 @@ body, .cursor{
     font-size: 20px;
     font-weight: 600;
 }
-/* game play */
+/* game play
+.hidden{
+    display: none;
+} */
 .game-play-sec{
     height: 100%;
     display: flex;
@@ -128,7 +180,7 @@ body, .cursor{
 .req-space{
    
     width: 100%;
-    height: 80px;
+    height: 90px;
     display: grid;
     grid-template-columns: repeat(auto-fill, 80px);
     column-gap: 15px;
@@ -245,10 +297,78 @@ body, .cursor{
     font-size: 50px;
     height: 100%;
     text-align: center;
+    padding: 0;
 }
 .floating-text{
     position: absolute;
     pointer-events: none; /* Ngăn không cho sự kiện click trên văn bản */
     opacity: 1;
     transition: opacity 1.5s ease, transform 3s ease;
+}
+.disabled {
+    pointer-events: none; /* Vô hiệu hóa sự kiện click */
+    opacity: 0.5; /* Làm ảnh nhạt để hiển thị là không thể click */
+}
+
+/* css cho popup */
+/* Định dạng overlay */
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Định dạng modal */
+.modal {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #9B672B;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 10000px;
+    width: 800px;
+    height: 400px;
+    text-align: center;
+}
+
+
+
+/* Không cho phép đóng modal khi click bên ngoài */
+.modal-content {
+    pointer-events: auto;
+}
+.hidden {
+    display: none;
+}
+.button-wrap{
+    padding-top: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.button-wrap button{
+    color: black;
+    font-weight: 700;
+    padding: 20px 20px;
+    background-color: #F4E8A8;
+    font-size: 20px;
+    border-radius: 10px;
+
+}
+
+.pop-title{
+    font-size: 60px;
+    color: white;
+}
+.pop-content{
+    font-size: 30px;
+    color: white;
 }
