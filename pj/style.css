@@ -10,6 +10,13 @@ html , body {
     margin: 0;
     height: 100%;
     padding: 0;
+    -moz-user-select: none !important;
+-webkit-touch-callout: none!important;
+-webkit-user-select: none!important;
+-khtml-user-select: none!important;
+-moz-user-select: none!important;
+-ms-user-select: none!important;
+user-select: none!important;
 }
 /* body, .cursor, img{
     cursor: url('assets/cursor/cur.png'),auto;
@@ -123,10 +130,10 @@ html , body {
     font-size: 20px;
     font-weight: 600;
 }
-/* game play */
+/* game play
 .hidden{
     display: none;
-}
+} */
 .game-play-sec{
     height: 100%;
     display: flex;
@@ -297,4 +304,71 @@ html , body {
     pointer-events: none; /* Ngăn không cho sự kiện click trên văn bản */
     opacity: 1;
     transition: opacity 1.5s ease, transform 3s ease;
+}
+.disabled {
+    pointer-events: none; /* Vô hiệu hóa sự kiện click */
+    opacity: 0.5; /* Làm ảnh nhạt để hiển thị là không thể click */
+}
+
+/* css cho popup */
+/* Định dạng overlay */
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Định dạng modal */
+.modal {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #9B672B;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 10000px;
+    width: 800px;
+    height: 400px;
+    text-align: center;
+}
+
+
+
+/* Không cho phép đóng modal khi click bên ngoài */
+.modal-content {
+    pointer-events: auto;
+}
+.hidden {
+    display: none;
+}
+.button-wrap{
+    padding-top: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.button-wrap button{
+    color: black;
+    font-weight: 700;
+    padding: 20px 20px;
+    background-color: #F4E8A8;
+    font-size: 20px;
+    border-radius: 10px;
+
+}
+
+.pop-title{
+    font-size: 60px;
+    color: white;
+}
+.pop-content{
+    font-size: 30px;
+    color: white;
 }
