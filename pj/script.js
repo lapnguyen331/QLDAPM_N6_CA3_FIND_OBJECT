@@ -9,6 +9,7 @@
 
     const failedClickSound = new Audio('assets/music/clickwrong.mp3');
     failedClickSound.preload= 'true'
+    failedClickSound.volume = 0.1;
 
     // Biến để theo dõi trạng thái nhạc nền
     let isMusicPlaying = false;
@@ -244,7 +245,6 @@
                
             }else{
                 console.log( this.game);
-
                 this.game.initGame(true,this.levelMaterial1)
             }
             
@@ -282,6 +282,17 @@
             const p2 = document.createElement('p')
             const p3 = document.createElement('p')
             const p4 = document.createElement('p')
+            p1.style.fontSize="20px"
+            p2.style.fontSize="20px"
+            p3.style.fontSize="20px"
+            p4.style.fontSize="20px"
+
+            p1.style.color="white"
+            p2.style.color="white"
+            p3.style.color="white"
+            p4.style.color="white"
+
+
             p1.textContent='Chào mừng đến với   Find Hidden Objects'
             p2.textContent='Trò chơi khám phá thú vị do nhóm 6 phát triển trong môn Quản lý Dự án Phần mềm. Đội ngũ của chúng tôi bao gồm các thành viên: Nguyễn Hoàng Lập, Nguyễn Quốc Bảo Khang, Võ Minh Thịnh, Phan Thanh Bình, Nguyễn Đình Nhân, Phan Thế Thịnh, Trấn Quốc Trung, và Hồ Như Hoan.'
             p3.textContent='Chúng tôi đã dành 1 tháng để thiết kế và phát triển trò chơi này, với mục tiêu mang đến cho bạn những trải nghiệm giải trí độc đáo và hấp dẫn. Mỗi cấp độ đều chứa đựng những bí ẩn thú vị, khuyến khích người chơi rèn luyện khả năng quan sát.'
@@ -1013,7 +1024,6 @@
     window.onload = () => {
        const menu = new Menu();
        
-
     };
     
 
