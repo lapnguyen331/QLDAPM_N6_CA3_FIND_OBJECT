@@ -1,6 +1,18 @@
   
      const cursorText= document.querySelector('.hidden-text') //text đi theo cursor
- 
+    //  let isFailedLoad = false
+    // const clickright = new Audio("assets/music/clickright.wav")
+    // const clickwrong = new Audio("assets/music/clickwrong.wav")
+     
+     clickright.addEventListener("error", () => {
+        console.error("Không thể tải file nhạc. Vui lòng kiểm tra đường dẫn hoặc file.");
+        isFailedLoad = true;
+    });
+    clickwrong.addEventListener("error", () => {
+        console.error("Không thể tải file nhạc. Vui lòng kiểm tra đường dẫn hoặc file.");
+        isFailedLoad = true;
+    });
+
      const levelMaterial = [
         { level:1, src: 'assets/background/back.jpg', mission: [1], objPosition: new Array(13),duration:60,minusScore:-10, plusScore:20 },
         { level:2, src: 'assets/background/back2.jpg', mission: [27], objPosition: new Array(13),duration:50,minusScore:-20,plusScore:30 },
@@ -136,8 +148,11 @@
     //cập nhật điểm ->tách riêng ra function nhằm phục vụ nhiều người chơi :>> 
     const scoreBoard = document.querySelector('.score')
     function updateScore(updateScore){
-        GameConf.score += updateScore;   
-        scoreBoard.innerHTML = GameConf.score
+        GameConf.score += updateScore;  
+        if(updateScore !=null){} 
+        const scoreBoard1 = document.querySelector('.score')
+
+        scoreBoard1.innerHTML = GameConf.score
     }
 
     
@@ -147,8 +162,11 @@
         floatingText.className = 'floating-text';
         if(minus){
             floatingText.textContent = `-${GameConf.plusScore}`;
+          
+            
         }else{
             floatingText.textContent = `+${GameConf.plusScore}`;
+            
         }
         boardImg.appendChild(floatingText);
 
@@ -174,22 +192,7 @@
     function checkHidden(element){
         return element.classList.contains('hidden');
     }
-   // Check local storage to see if the game has already been started
-    // function checkGameStatus(parent){
-    //     switch(localStorage.getItem('gamestatus')){
-    //         case 'start':
-    //             checkHidden(parent.menuSec) ? console.log("game start"):parent.menuSec.classList.add('hidden'); 
-    //             checkHidden(parent.gamePlaySec) ? parent.gamePlaySec.classList.remove('hidden'):console.log("game start");
-    //             break;
-    //         case 'pause':
-    //             break;
-    //         case  'exit':
-    //             checkHidden(parent.menuSec)? parent.menuSec.classList.remove('hidden'):console.log('exit game'); 
-    //             checkHidden(parent.gamePlaySec) ? console.log('exit game'): parent.gamePlaySec.classList.add('hidden');
-    //             break;
-    //     }    
-    // }
-
+ 
     // NOTE: luồng game
     class Menu {
         constructor() {
@@ -207,9 +210,12 @@
             this.historyBut.addEventListener('click', () => this.showHistory())
             this.aboutBut.addEventListener('click', () => this.about())
             this.game = null;
-            this.levelMaterial1= levelMaterial;
+            this.levelMaterial1= [...levelMaterial];
+            this.popUp = null;
             
         }
+        
+        
     
         startGame() {
             console.log('start game');
@@ -219,10 +225,14 @@
             if(this.game ===null){
                 console.log("khởi tạo game mới");
                 this.game = new Game(this); // Khởi tạo lớp game
+                this.game.showPlayerPopup();
+               
+            }else{
+                console.log( this.game);
+
+                this.game.initGame(true,this.levelMaterial1)
             }
-            console.log( this.game);
             
-            this.game.initGame(true,this.levelMaterial1);
         }
         
         show(){
@@ -233,15 +243,82 @@
         }
         startTuto(){
             console.log("tuto nè");
+            console.log(this.game);
+            this.showTutoPopup()
         }
         showHistory(){
             console.log('show history');
         }
         about(){
             console.log('about');
+            console.log('show popup');
+            let butList =[]
+
+
+            const closeBut = document.createElement('button')
+            closeBut.setAttribute('class', 'home-button');  
+            closeBut.textContent = 'Đóng x';
+
+            
+            closeBut.addEventListener('click',() =>{
+                this.closePopUp()
+            })
+            const p1 = document.createElement('p')
+            const p2 = document.createElement('p')
+            const p3 = document.createElement('p')
+            const p4 = document.createElement('p')
+            p1.textContent='Chào mừng đến với   Find Hidden Objects'
+            p2.textContent='Trò chơi khám phá thú vị do nhóm 6 phát triển trong môn Quản lý Dự án Phần mềm. Đội ngũ của chúng tôi bao gồm các thành viên: Nguyễn Hoàng Lập, Nguyễn Quốc Bảo Khang, Võ Minh Thịnh, Phan Thanh Bình, Nguyễn Đình Nhân, Phan Thế Thịnh, Trấn Quốc Trung, và Hồ Như Hoan.'
+            p3.textContent='Chúng tôi đã dành 1 tháng để thiết kế và phát triển trò chơi này, với mục tiêu mang đến cho bạn những trải nghiệm giải trí độc đáo và hấp dẫn. Mỗi cấp độ đều chứa đựng những bí ẩn thú vị, khuyến khích người chơi rèn luyện khả năng quan sát.'
+            p4.textContent='Cảm ơn bạn đã ủng hộ chúng tôi !  Hãy tham gia ngay để khám phá thế giới của  Find Hidden Objects  !'
+
+            let plist =[]
+            plist.push(p1,p2,p3,p4)
+
+        
+            butList.push(closeBut)
+            this.popUp= new Popup(`Về chúng tôi !`,"",true)
+            this.popUp.addButton(butList)
+            this.popUp.addInput(plist)
+
         }
         setup(){
             console.log('setup');
+        }
+        showTutoPopup(){
+            console.log('show popup');
+            let butList =[]
+
+            const closeBut = document.createElement('button')
+            closeBut.setAttribute('class', 'home-button');  
+            closeBut.textContent = 'Đóng x';
+
+            closeBut.addEventListener('click',() =>{
+                this.closePopUp()
+            })
+
+            //video
+            const videoTag = document.createElement('video')
+            videoTag.setAttribute("width", "640");     // Đặt chiều rộng cho video
+            videoTag.setAttribute("height", "360");    // Đặt chiều cao cho video
+            videoTag.setAttribute("controls", true);   // Hiển thị các nút điều khiển cho video
+            videoTag.autoplay='true'
+            const source = document.createElement('source')
+            source.setAttribute("src", "Hẹn Em Ở Lần Yêu Thứ 2 - Nguyenn x @Dangtuanvu.Original  .mp4");   // Đường dẫn đến file video
+            source.setAttribute("type", "video/mp4");          // Định dạng của video
+
+            videoTag.appendChild(source)
+            let videoList =[]
+            videoList.push(videoTag)
+            butList.push(closeBut)
+            this.popUp= new Popup(`Hướng dẫn chơi game !`,"",true)
+            this.popUp.addButton(butList)
+            this.popUp.addInput(videoList)
+        }
+        //đóng popup
+        closePopUp(){
+            this.popUp.remove()
+            this.popUp=null
         }
     }
     //NOTE: quản lí game
@@ -257,9 +334,114 @@
             this.menu = menu;
           
             this.requestObjs = null
+            this.players = [];
             //biến lưu tạm pop
             this.popUp = null;
-            this.levelMaterial2 = levelMaterial
+            this.levelMaterial2 = [...levelMaterial]
+
+        }
+        //hiện popup yêu cầu nhập vào thông tin người chơi
+        showPlayerPopup(){
+            const form = document.createElement('form')
+            form.classList.add('input-form')
+     
+            const inputP2 = document.createElement('p')
+            inputP2.textContent = 'Nhập tên người chơi: '
+            const inputP3 = document.createElement('p')
+
+            const input2 = document.createElement('input')
+            input2.classList.add('input-name')
+            input2.required = true;
+            input2.type ='text'
+            input2.placeholder='Nhập tên người dùng ....'
+            const inputsmall = document.createElement('small')
+            inputsmall.innerHTML ="*Nếu nhiều người chơi, ngăn cách tên bằng dấu phẩy ','"
+            inputP3.appendChild(inputsmall)
+
+            const indiv2 = document.createElement('div')
+            indiv2.classList.add('name-div')
+
+           const indiv1 = document.createElement('div')
+           indiv1.classList.add('text-div')
+            indiv1.appendChild(inputP2)
+       
+            indiv2.appendChild(input2)
+            indiv2.appendChild(inputP3)
+
+            const submitButton = document.createElement("button");
+            submitButton.classList.add('submit')
+            submitButton.type = "submit";
+            submitButton.textContent = "Vào game ->";
+
+            const div3 = document.createElement('div')
+            div3.classList.add('input-wrapper')
+            div3.appendChild(indiv1)
+            div3.appendChild(indiv2)
+            form.appendChild(div3)
+
+            form.appendChild(submitButton)
+            form.addEventListener("submit", (event) => {
+                event.preventDefault(); // Ngăn chặn form reload trang
+                console.log("nhập tên user");
+                const names = input2.value.split(",").map(name => name.trim()); // Xóa khoảng trắng thừa
+                this.startPlay(names)
+            });
+            let node = []
+            node.push(form)
+            this.popUp= new Popup(`Nhập thông tin player !!`,"",false)
+            this.popUp.addInput(node)
+        }
+        
+        //cập nhật thông tin người chơi lên dom
+        showPlayerInfor(){
+            const playerNum = document.querySelector('.player-num')
+            const playerSec = document.querySelector('.player-joined')
+            console.log("player");
+            console.log(this.players);
+            playerNum.innerHTML = 'Số người chơi:'+this.players.length
+            if(this.players.length > 8 ){
+                alert('lỗi: số lượng người chơi vượt quá 7')
+            }
+            this.players.forEach(e =>{
+                console.log("hehe");
+                console.log(e);
+                let str = ` <div class="player-sec" id ="${e.id}">
+                        <div class="avartar">
+                            <img src="assets/avatar1.jpg" alt="">
+                        </div>
+                        <div class="player-infor">
+                            <div class="name">${e.name}</div>
+                            <div class="score play-boild">0</div>
+                        </div>
+                    </div>`
+                playerSec.insertAdjacentHTML('beforeend',str)
+            })
+        }
+        //xóa người chơi --> có thể có bug
+        removePlayer(id){
+            this.players.filter(item => item.id !==id)
+        }
+        //tại player mới
+        createPlayer(name){
+            let newPlayer = new Player(name);
+            
+            this.players.push(newPlayer);
+        }
+        //hàm vào chơi game
+        startPlay(nameList){
+            console.log("name");
+            console.log(nameList);
+            
+            if(nameList == null) alert('chưa nhập tên user')
+            for (const name of nameList) {
+                console.log("Tên:", name);
+                this.createPlayer(name)
+            }
+            console.log("player nè");
+            console.log(this.players);
+            this.hidePlayerPopup();
+            this.showPlayerInfor();
+            this.initGame(true,this.levelMaterial2);
 
         }
         //bool =true thì game mới chãy , level =1, =false là để tái sử dụng
@@ -334,6 +516,7 @@
         doWin(){
             console.log("win");
             if(this.countdownInterval){
+                console.log("đã clear interval");
                 clearInterval(this.countdownInterval); // Dừng đếm ngược nếu còn chạy
             }
             //kiểm tra th phá đảo game
@@ -381,7 +564,7 @@
                     this.nextLevel()
                 })
                 butList.push(homebut,rebut,levelUpbut)
-                this.popUp= new Popup(`Bạn đã thắng level ${GameConf.currLevel} !!`,` Số điểm của bạn: ${GameConf.score}`)
+                this.popUp= new Popup(`Bạn đã thắng level ${GameConf.currLevel} !!`,` Số điểm của bạn: ${GameConf.score}`,false)
                 this.popUp.addButton(butList)
             }else{
                 let butList =[]
@@ -404,7 +587,7 @@
                 })
                
                 butList.push(homebut,rebut)
-                this.popUp= new Popup(`Bạn đã phá đảo game của tôi !!`,` Số điểm của bạn: ${GameConf.score}`)
+                this.popUp= new Popup(`Bạn đã phá đảo game của tôi !!`,` Số điểm của bạn: ${GameConf.score}`,false)
                 this.popUp.addButton(butList)
             }
 
@@ -415,6 +598,10 @@
             // this.modalOverlay.classList.remove('hidden');
             // this.modalPopup.classList.remove('hidden');
 
+        }
+        hidePlayerPopup(){
+            this.popUp.remove()
+            this.popUp =null
         }
         hideWinPopUp(){
            this.popUp.remove()
@@ -466,7 +653,7 @@
                         }
                     //sự kiện cập nhật điểm
                     event.stopPropagation();
-
+                    console.log("cập nhật điểm");
                     updateScore(GameConf.plusScore);
                     pointFloatEffect(event,false)
                     console.log(GameConf.score);
@@ -551,7 +738,7 @@
             })
           
             butList.push(homebut,rebut)
-            this.popUp= new Popup(`Bạn đã thua tại level ${GameConf.currLevel} !!`,` Số điểm của bạn: ${GameConf.score}`)
+            this.popUp= new Popup(`Bạn đã thua tại level ${GameConf.currLevel} !!`,` Số điểm của bạn: ${GameConf.score}`,false)
             this.popUp.addButton(butList)  
             
         }
@@ -561,11 +748,11 @@
                 this.popUp.remove()
                 this.popUp=null
             }
+            clearInterval(this.countdownInterval)
             
             this.gameBoard.hide()
             this.menu.show()
-            //BUG : đang ko works được lưu trữ trạng thái nên reload trang luôn
-            // location.reload();// trick lỏ, khi go home thì reload trang, clear toàn bộ game --> NOTE:BUG
+           
             
         }
         //remove các tag ảnh đã tồn tại trong DOM
@@ -706,7 +893,7 @@
     }
 
     class Popup {
-        constructor(title, message) {
+        constructor(title, message,isBigForm) {
     
             // Tạo overlay và modal mới mỗi khi show được gọi
             this.overlay = document.createElement('div');
@@ -726,7 +913,9 @@
             const messageElement = document.createElement('p');
             messageElement.classList.add('pop-content')
             messageElement.innerText = message;
-    
+            this.inputCont = document.createElement('div');
+            this.inputCont.classList.add('input-cont')
+           //thêm input tag
            
             
             // Thêm phần tử vào modal và overlay
@@ -737,12 +926,29 @@
             this.butdiv.setAttribute('class', 'button-wrap');  
 
             this.modal.appendChild(modalContent);
+          
+            
+            this.modal.appendChild(this.inputCont)
+            
             this.modal.appendChild(this.butdiv)
+            //phiên bản pop up có chiều cao
+            if(isBigForm){
+                titleElement.style.marginTop ='10px'
+                titleElement.style.marginBottom ='10px'
+
+                this.modal.style.height ='600px'
+
+            }
             // Thêm overlay và modal vào body
             document.body.appendChild(this.overlay);
             document.body.appendChild(this.modal);
         }
-    
+        //set input 
+        addInput(input){
+            input.forEach(e =>{
+                this.inputCont.appendChild(e)
+            })
+        }
         // Hiển thị popup với tiêu đề và thông báo cụ thể
         show() {
            this.modal.classList.remove('hidden')
@@ -773,6 +979,19 @@
                 this.overlay.classList.add('hidden');
                 this.modal.classList.add('hidden');
             }
+        }
+    }
+    class Player{
+        static nextId = 1; // Biến tĩnh để lưu ID tiếp theo
+        constructor(name){
+            this.id =Player.nextId++ ,
+            this.name = name;
+        }
+        getInfor(){
+            return `ID: ${this.id}, Name: ${this.name}`;
+        }
+        setName(name){
+            this.name = name;
         }
     }
     // Khởi tạo menu khi trang được tải

@@ -354,7 +354,7 @@ user-select: none!important;
     flex-direction: row;
     justify-content: space-around;
 }
-.button-wrap button{
+.button-wrap button,.submit{
     color: black;
     font-weight: 700;
     padding: 20px 20px;
@@ -372,3 +372,39 @@ user-select: none!important;
     font-size: 30px;
     color: white;
 }
+ .input-form{
+    display: flex;
+    flex-direction: column;
+  
+    align-items: center;
+    color: white;
+}
+.input-wrapper{
+    display: flex;
+    flex-direction: row;
+    margin-left: 10%;
+}
+.text-div{
+    font-weight: 700;
+}
+.text-div p{
+    padding: 0;
+    margin: 0;
+}
+small{
+    font-size: 15px;
+    color: white;
+}
+.name-div{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-left: 20px;
+}
+.input-name{
+    font-size: 20px;
+    color: black;
+    font-weight:400 ;
+
+}
+
