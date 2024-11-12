@@ -1,17 +1,21 @@
   
      const cursorText= document.querySelector('.hidden-text') //text đi theo cursor
-    //  let isFailedLoad = false
-    // const clickright = new Audio("assets/music/clickright.wav")
-    // const clickwrong = new Audio("assets/music/clickwrong.wav")
-     
-     clickright.addEventListener("error", () => {
-        console.error("Không thể tải file nhạc. Vui lòng kiểm tra đường dẫn hoặc file.");
-        isFailedLoad = true;
-    });
-    clickwrong.addEventListener("error", () => {
-        console.error("Không thể tải file nhạc. Vui lòng kiểm tra đường dẫn hoặc file.");
-        isFailedLoad = true;
-    });
+    
+    const backgroundMusic = new Audio('assets/music/videoplayback_out.mp3');
+    backgroundMusic.volume = 0.2; // Đặt âm lượng nhạc nền thấp hơn (20% âm lượng tối đa)
+    backgroundMusic.preload= 'true'
+    const correctClickSound = new Audio('assets/music/clickright.wav');
+    correctClickSound.preload= 'true'
+
+    const failedClickSound = new Audio('assets/music/clickwrong.mp3');
+    failedClickSound.preload= 'true'
+
+    // Biến để theo dõi trạng thái nhạc nền
+    let isMusicPlaying = false;
+
+
+   
+
 
      const levelMaterial = [
         { level:1, src: 'assets/background/back.jpg', mission: [1], objPosition: new Array(13),duration:60,minusScore:-10, plusScore:20 },
@@ -154,7 +158,18 @@
 
         scoreBoard1.innerHTML = GameConf.score
     }
-
+    //handle các trường hợp sound khi click
+    function handleClick(isCorrect) {
+        if (isCorrect) {
+            const csound = correctClickSound.cloneNode()
+            csound.play(); // Phát âm thanh khi click đúng
+            console.log("Correct click!");
+        } else {
+            const fsound = failedClickSound.cloneNode()
+            fsound.play();  // Phát âm thanh khi click failed
+            console.log("Failed click!");
+        }
+    }
     
     //hiệu ứng khi cursor click đúng sẽ có điểm bay lên hehe :>>
     function pointFloatEffect(event,minus){
@@ -162,11 +177,11 @@
         floatingText.className = 'floating-text';
         if(minus){
             floatingText.textContent = `-${GameConf.plusScore}`;
-          
+            handleClick(false)
             
         }else{
             floatingText.textContent = `+${GameConf.plusScore}`;
-            
+            handleClick(true)
         }
         boardImg.appendChild(floatingText);
 
@@ -997,6 +1012,7 @@
     // Khởi tạo menu khi trang được tải
     window.onload = () => {
        const menu = new Menu();
+       
 
     };
     
