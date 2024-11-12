@@ -1,16 +1,15 @@
-
-
-
   
      const cursorText= document.querySelector('.hidden-text') //text đi theo cursor
  
      const levelMaterial = [
-        { level:1, src: 'assets/background/back.jpg', mission:[1], objPosition: new Array(13),duration:60,minusScore:-10, plusScore:20 },
-        { level:2, src: 'assets/background/back2.jpg', mission: [2,3,4,5,7,8,10,18,19,21,29,30,27], objPosition: new Array(13),duration:50,minusScore:-20,plusScore:30 },
-        { level:3, src: 'assets/background/back3.jpg', mission: [16,7,6,17,22,28,35,34,33,26,25,24,9],objPosition: new Array(13),duration:40, minusScore:-30,plusScore:40},
+        { level:1, src: 'assets/background/back.jpg', mission: [1], objPosition: new Array(13),duration:60,minusScore:-10, plusScore:20 },
+        { level:2, src: 'assets/background/back2.jpg', mission: [27], objPosition: new Array(13),duration:50,minusScore:-20,plusScore:30 },
+        { level:3, src: 'assets/background/back3.jpg', mission: [9],objPosition: new Array(13),duration:40, minusScore:-30,plusScore:40}
 
     ];
     // mission:[1,2,6,14,16,17,34,33,28,12,24,25,26]
+    // [2,3,4,5,7,8,10,18,19,21,29,30,27]
+    // [16,7,6,17,22,28,35,34,33,26,25,24,9]
     const hiddenObjList = [
         {id:1,src: 'assets/hiddenobj/hiddenobj_mag.png'},
         {id:2, src: 'assets/hiddenobj/hiddenobject_arrow.png'},
@@ -52,15 +51,18 @@
      
      // lấy ảnh theo level
     const boardImg = document.querySelector('.play-space');
-    
-    const GameConf = {
+    const GameStatus ={
         pause:'pause',
         runing:'runing',
         lose:'lose',
         win:'win',
         start : 'start',
         exit : 'exit',
-        default:'default',
+        default:'default'
+
+    }
+    const GameConf = {
+        gamestatus:null,
         score:  0,
         plusScore :20,
         currLevel :3,
@@ -70,14 +72,15 @@
         boardHeight:0,
        
     }
-    let reqObjs = levelMaterial[0].mission
+    var reqObjs =[...levelMaterial[0].mission]
     //hàm này để cập nhật lại các giá trị khởi tạo game 
     function setGameConfig(level){
         GameConf.timeRemaining = levelMaterial[level-1].duration
         GameConf.currLevel =level
         GameConf.minusScore = levelMaterial[level-1].minusScore
         GameConf.plusScore = levelMaterial[level-1].plusScore
-        reqObjs = levelMaterial[level-1].mission
+        // reqObjs = levelMaterial[level-1].mission
+        GameConf.score=0
     }
 
     //hàm lấy obj theo id trong danh sách các hidden obj
@@ -128,7 +131,6 @@
             reqSpace.appendChild(reqImg)
 
         }
-        GameConf.requestObjs = reqList
         
     }
     //cập nhật điểm ->tách riêng ra function nhằm phục vụ nhiều người chơi :>> 
@@ -168,8 +170,7 @@
             boardImg.removeChild(floatingText);
         }, 12000); // Thời gian để hiệu ứng hoàn thành
     }
-   
-    
+   //kiểm tra 1 elem có class hidden ko ?
     function checkHidden(element){
         return element.classList.contains('hidden');
     }
@@ -195,7 +196,6 @@
             this.menuSec = document.querySelector('.menu-sec')
              //menu button
             this.startBut = document.querySelector('.start')
-            console.log(this.startBut);
             this.tutorialBut = document.querySelector('.tutorial')
             this.setupBut = document.querySelector('.setup')
             this.historyBut = document.querySelector('.history')
@@ -207,6 +207,8 @@
             this.historyBut.addEventListener('click', () => this.showHistory())
             this.aboutBut.addEventListener('click', () => this.about())
             this.game = null;
+            this.levelMaterial1= levelMaterial;
+            
         }
     
         startGame() {
@@ -214,8 +216,13 @@
             setGameConfig(1)
             localStorage.setItem('gamestatus', 'start'); // Lưu trạng thái
             this.hide()
-            this.game = new Game(this); // Khởi tạo lớp game
-            this.game.initGame(true);
+            if(this.game ===null){
+                console.log("khởi tạo game mới");
+                this.game = new Game(this); // Khởi tạo lớp game
+            }
+            console.log( this.game);
+            
+            this.game.initGame(true,this.levelMaterial1);
         }
         
         show(){
@@ -248,46 +255,64 @@
             this.duration = 1*60 //thời gian của game
             this.isGameOver = false
             this.menu = menu;
-           
           
             this.requestObjs = null
             //biến lưu tạm pop
             this.popUp = null;
+            this.levelMaterial2 = levelMaterial
 
         }
-    
-        initGame(bool) {
+        //bool =true thì game mới chãy , level =1, =false là để tái sử dụng
+        initGame(bool, levelMaterial3) {
             if(bool){
+                // console.log("true : level");
+                console.log("level2: "+ levelMaterial3);
                 this.gameBoard = new GameBoard(this);
                 this.gameBoard.show();
                 this.getScreenInfor();
-                this.resetGame(1)
-                
+                console.log(GameConf);                
                 this.status= GameConf.start
                 console.log("chạy init");
+                // reqObjs = levelMaterial2[0].mission
+                // this.requestObjs=levelMaterial2[0].mission
+                this.setGameElement(GameConf.currLevel, levelMaterial3)
+                let imgTag = document.querySelectorAll('.req-space img')
+                if(imgTag.length !==0){
+                    this.removeImgTag()
+                    console.log("đã remove tag cũ");
+                }
+                GameConf.status = GameStatus.runing
 
                 this.startCountdown()//chạy đếm ngược
                 this.runGif(this.duration*1000)
-                this.requestObjs = levelMaterial[GameConf.currLevel-1].mission
+                // this.requestObjs = levelMaterial[1].mission
                 console.log("req" +reqObjs);
                 showReObj()
                 console.log("request/"+ this.requestObjs);
                 this.randomHiddenObj();
 
                 this.clickHandler()
+                console.log(this);
+
             }else{
+                console.log("chạy init với level !=1");
+                console.log(levelMaterial3);
                 this.gameBoard = new GameBoard(this);
+                console.log(this.game);
                 this.gameBoard.show();
                 this.getScreenInfor();
-                this.resetGame(GameConf.currLevel)
-                
+                console.log("curr level"+GameConf.currLevel);
+                this.resetGame()
+                this.setGameElement(GameConf.currLevel, levelMaterial3)
                 this.status= GameConf.start
-                console.log("chạy init");
-
+                console.log("chạy init false");
+                GameConf.status = GameStatus.runing
                 this.startCountdown()//chạy đếm ngược
                 this.runGif(this.duration*1000)
-                this.requestObjs = levelMaterial[GameConf.currLevel-1].mission
-                console.log("req" +reqObjs);
+
+                // reqObjs = levelMaterial2[GameConf.currLevel-1]
+                // this.requestObjs = levelMaterial2[GameConf.currLevel-1].mission
+                console.log(reqObjs);
                 showReObj()
                 console.log("request/"+ this.requestObjs);
                 this.randomHiddenObj();
@@ -325,9 +350,9 @@
             let level = GameConf.currLevel;
             setGameConfig(level+1)
             this.removeImgTag()
-            this.initGame()
+            this.initGame(false,levelMaterial)
         }
-        //show popup khi win
+        //show popup khi win bool true nghĩa là level =1=2, false level =3 ==> phá đảo game
         showWinPopUp(bool){
             if(!bool){
                     let butList =[]
@@ -402,12 +427,12 @@
             
             for(let  i =0; i< objList.length;i++){
                 let obj = getObj(objList[i]); //lấy lại obj từ danh sách lưu các hidden obj
-                const img = document.createElement('img'); //tạo img để append vào
+                let img = document.createElement('img'); //tạo img để append vào
                 img.src = obj.src;
                 img.className = `${obj.id}`//đặt class theo id ảnh để lấy so sánh 
                 img.style.position = 'absolute';
                 // Đặt vị trí ngẫu nhiên trong thẻ div
-                const { x, y } = createRandomPosition(GameConf.boardWidth,GameConf.boardHeight, 170, 170);
+                let { x, y } = createRandomPosition(GameConf.boardWidth,GameConf.boardHeight, 170, 170);
                 console.log(x);
                 levelMaterial[GameConf.currLevel-1].objPosition.push({x,y});
                 img.style.left = `${x}px`;
@@ -420,15 +445,24 @@
                     hide.style.visibility = 'hidden' //hide đi request obj
                     img.style.visibility='hidden'
                     //cập nhật danh sách request
-                        console.log("remove/" + reqObjs);
+                        console.log("remove/" + reqObjs.length);
                         if(reqObjs.length > 0){
                             reqObjs.forEach(e => {
+                                console.log("check e");
+                                console.log(e);
+                                console.log(`${obj.id}`);
                                 if(e == `${obj.id}`){
                                     reqObjs.splice(reqObjs.indexOf(e),1)
+                                    console.log("remove dc");
+
                                     }
                                 }
                             )
-                            console.log("remove dc");
+                        }
+                        console.log(reqObjs);
+                        if(reqObjs.length == 0){
+                            console.log("win dc");
+                            GameConf.status = GameStatus.win
                         }
                     //sự kiện cập nhật điểm
                     event.stopPropagation();
@@ -523,10 +557,15 @@
         }
         //điều khiển quay về trang chủ
         goHome(){
-            this.popUp.remove()
-            this.popUp=null
+            if(this.popUp !== null){
+                this.popUp.remove()
+                this.popUp=null
+            }
+            
             this.gameBoard.hide()
             this.menu.show()
+            //BUG : đang ko works được lưu trữ trạng thái nên reload trang luôn
+            // location.reload();// trick lỏ, khi go home thì reload trang, clear toàn bộ game --> NOTE:BUG
             
         }
         //remove các tag ảnh đã tồn tại trong DOM
@@ -543,18 +582,37 @@
         
     
          // Phương thức reset
-        resetGame(level) {
-            this.requestObjs = levelMaterial[level-1].mission
-            setGameConfig(level)
+        resetGame() {
+            console.log("set game");
+            reqObjs= undefined;
+            // console.log("req1"+reqObjs);
+            // console.log("request1"+this.requestObjs);
             // this.mistakes = 0; // Đặt lại số lỗi
             this.isGameOver = false;
+            this.requestObjs= undefined;
+            console.log(reqObjs);
+            console.log(this.requestObjs);
+
             // this.startCountdown(); // Khởi động lại đếm ngược nếu chơi lại
             this.getObjElement().forEach(e => e.classList.remove('disabled'))
             //chưa clear danh sách obj, requestobj
         }
+        setGameElement(level1, levelMaterial3){
+            console.log("set lai gia tri");
+            console.log("req"+reqObjs);
+            console.log(levelMaterial3);
+            console.log(levelMaterial3[level1-1].mission);
+            console.log(level1);
+            console.log("requestobj" +this.requestObjs);
+            reqObjs=[...levelMaterial3[level1-1].mission]
+            this.requestObjs = [...levelMaterial3[level1-1].mission]
+            console.log("req"+reqObjs);
+            console.log("request/"+this.requestObjs);
+
+
+        }
         // Phương thức bắt đầu đếm ngược
         startCountdown() {
-            if(this.isGameOver) clearInterval(this.countdownInterval);
             this.countdownInterval = setInterval(() =>{
                 if(GameConf.timeRemaining > 0){
                     GameConf.timeRemaining--;
@@ -566,7 +624,7 @@
                 // Hiển thị kết quả
                 const countdownElement = document.getElementById('countdown');
                 countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                if(reqObjs.length <= 0){
+                if(GameConf.status == GameStatus.win){
                     countdownElement.textContent =" you Win!"
                     console.log("win");
                     this.doWin();
@@ -596,8 +654,24 @@
 
         }
         replay(){
-            console.log('replay nè');
+            console.log("replay");
+            if(this.countdownInterval){
+                clearInterval(this.countdownInterval); // Dừng đếm ngược nếu còn chạy
+            }
+            if(this.popUp !== null){
+                this.hideWinPopUp();
 
+            }
+            let level = GameConf.currLevel;
+            setGameConfig(level)
+            this.removeImgTag()
+            if(GameConf.currLevel ==1){
+                this.resetGame()
+                this.initGame(true,this.levelMaterial2)
+            }else{
+                this.initGame(false,this.levelMaterial2)
+
+            }
         }
 
 
