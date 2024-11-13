@@ -261,9 +261,77 @@
             console.log(this.game);
             this.showTutoPopup()
         }
-        showHistory(){
+        showHistory() {
             console.log('show history');
+            console.log('show popup');
+        
+            // Tạo nút đóng popup
+            const closeBut = document.createElement('button');
+            closeBut.setAttribute('class', 'home-button');
+            closeBut.textContent = 'Đóng x';
+        
+            // Gán sự kiện cho nút đóng để ẩn popup
+            closeBut.addEventListener('click', () => {
+                this.closePopUp();
+            });
+        
+            // Tạo tiêu đề lịch sử
+            const historyTitle = document.createElement('h3');
+            historyTitle.style.fontSize = "24px";
+            historyTitle.style.color = "white";
+            historyTitle.textContent = 'Lịch sử chơi';
+        
+            // Lấy lịch sử từ localStorage
+            let history = JSON.parse(localStorage.getItem('gameHistory')) || [];
+        
+            // Tạo danh sách hiển thị lịch sử
+            const historyList = [historyTitle];
+            history.forEach(record => {
+                const historyP = document.createElement('p');
+                historyP.style.fontSize = "18px";
+                historyP.style.color = "white";
+                historyP.textContent = `Ngày chơi: ${record.date} - Điểm số: ${record.score}`;
+                historyList.push(historyP);
+            });
+        
+            // Thêm nút vào danh sách nút popup
+            const butList = [closeBut];
+        
+            // Tạo và hiển thị popup
+            this.popUp = new Popup(`Lịch sử chơi`, "", true);
+            this.popUp.addButton(butList);
+            this.popUp.addInput(historyList);
         }
+        clearHistory() {
+            localStorage.removeItem('gameHistory');
+            console.log("Lịch sử đã được xóa");
+            this.showHistory(); // Cập nhật giao diện
+        }
+                
+
+
+endGame(score) {
+    // Tạo đối tượng lịch sử cho lần chơi này
+    const playRecord = {
+        date: new Date().toLocaleDateString(), // Lấy ngày hiện tại
+        score: score
+    };
+
+    // Lấy lịch sử hiện có từ localStorage
+    let history = JSON.parse(localStorage.getItem('gameHistory')) || [];
+
+    // Thêm điểm mới vào lịch sử
+    history.push(playRecord);
+
+    // Lưu lịch sử cập nhật vào localStorage
+    localStorage.setItem('gameHistory', JSON.stringify(history));
+
+    console.log("Điểm đã được lưu vào lịch sử:", playRecord);
+}
+
+
+
+
         about(){
             console.log('about');
             console.log('show popup');
@@ -308,9 +376,99 @@
             this.popUp.addInput(plist)
 
         }
-        setup(){
+      
+        
+        setup() {
             console.log('setup');
+            
+            const overlay = document.createElement('div');
+            overlay.classList.add('popup-overlay');
+            
+            const container = document.createElement('div');
+            container.classList.add('popup-container');
+            
+            const closeButton = document.createElement('button');
+            closeButton.classList.add('popup-close');
+            closeButton.textContent = 'X';
+            closeButton.addEventListener('click', () => {
+                document.body.removeChild(overlay);
+            });
+            container.appendChild(closeButton);
+            
+            const title = document.createElement('div');
+            title.classList.add('popup-title');
+            title.textContent = 'Cài Đặt';
+            container.appendChild(title);
+            
+            const items = [
+                { icon: '🎵', text: 'Nhạc', type: 'switch' },
+                { icon: '🔊', text: 'Âm Thanh', type: 'switch' },
+                { icon: '✉️', text: 'Liên Hệ', type: 'link' },
+                { icon: 'ℹ️', text: 'Giới Thiệu', type: 'link' },
+                { icon: '🌐', text: 'Ngôn Ngữ', type: 'link' }
+            ];
+            
+            items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('popup-item');
+                
+                const icon = document.createElement('span');
+                icon.classList.add('icon');
+                icon.textContent = item.icon;
+                
+                const text = document.createElement('span');
+                text.textContent = item.text;
+                
+                itemDiv.appendChild(icon);
+                itemDiv.appendChild(text);
+                
+                if (item.type === 'switch') {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    itemDiv.appendChild(checkbox);
+                    
+                    if (item.text === 'Nhạc') {
+                        const musicAudio = new Audio('https://thegioicongnghe.store/wp-content/uploads/2024/11/music-background-3.mp3'); 
+                        
+                        checkbox.addEventListener('change', (e) => {
+                            if (e.target.checked) {
+                                musicAudio.play().catch(error => {
+                                    console.error('Không thể phát nhạc:', error);
+                                }); 
+                            } else {
+                                musicAudio.pause(); 
+                                musicAudio.currentTime = 0; 
+                            }
+                        });
+                    }
+                } else {
+                   const arrow = document.createElement('span');
+    arrow.textContent = '>';
+    arrow.classList.add('arrow');  
+    itemDiv.appendChild(arrow);
+                }
+                
+                container.appendChild(itemDiv);
+            });
+            
+            // Phiên bản và liên kết
+            const version = document.createElement('div');
+            version.classList.add('popup-version');
+            version.textContent = 'Version: 0.1';
+            
+            const links = document.createElement('div');
+            links.classList.add('popup-links');
+            links.innerHTML = '<a href="#">Chính sách riêng tư</a> | <a href="#">Điều khoản dịch vụ</a>';
+            
+            container.appendChild(version);
+            container.appendChild(links);
+            
+            overlay.appendChild(container);
+            document.body.appendChild(overlay);
         }
+        
+
+        
         showTutoPopup(){
             console.log('show popup');
             let butList =[]
