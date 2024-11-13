@@ -354,7 +354,7 @@ user-select: none!important;
     flex-direction: row;
     justify-content: space-around;
 }
-.button-wrap button,.submit{
+.button-wrap button,.submit, .home-button{
     color: black;
     font-weight: 700;
     padding: 20px 20px;

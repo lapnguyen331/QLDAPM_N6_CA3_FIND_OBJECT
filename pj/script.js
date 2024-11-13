@@ -416,7 +416,26 @@
             node.push(form)
             this.popUp= new Popup(`Nhập thông tin player !!`,"",false)
             this.popUp.addInput(node)
+
+
+// thhêm chức năng quay lại trang chủ
+const homeButton = document.createElement("button");
+homeButton.classList.add('home-button'); 
+homeButton.type = "button";
+homeButton.textContent = "Quay lại trang chủ";
+
+// Gán sự kiện 
+homeButton.addEventListener("click", () => {
+    window.location.assign("./index.html");
+});
+
+
+// Thêm nút quay lại trang chủ vào form
+form.appendChild(homeButton);
+
         }
+
+        
         
         //cập nhật thông tin người chơi lên dom
         showPlayerInfor(){
