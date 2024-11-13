@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm đồ vật</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/brands.min.css" integrity="sha512-EJp8vMVhYl7tBFE2rgNGb//drnr1+6XKMvTyamMS34YwOEFohhWkGq13tPWnK0FbjSS6D8YoA3n3bZmb3KiUYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/fontawesome.min.css" integrity="sha512-B46MVOJpI6RBsdcU307elYeStF2JKT87SsHZfRSkjVi4/iZ3912zXi45X5/CBr/GbCyLx6M1GQtTKYRd52Jxgw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- video.js  -->
+    <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/7.14.3/video.js"></script>
+</head>
+<body scroll="no" style="overflow: hidden;  "  class="cursor">
+
+    <!-- menu start -->
+    <div id="game-container">
+        <div class="menu-sec">
+            <div class="menu-title">
+                <h2 class="gameTitle play-boild">Game Tìm Đồ Vật</h2>
+                <h3 class="gameSubTitle play-regular">Welcome to our world</h3>
+            </div>
+           <div class="menu">
+                <button class="start one">Bắt đầu</button>
+                <button class="tutorial">Hướng dẫn</button>
+                <button class="setup">Cài đặt</button>
+                <button class="history">Lịch sử</button>
+                <button class="about">About us</button>
+           </div>
+        </div>
+        
+        <div class="game-play-sec hidden">
+            <div class="game-board">
+                <div class="play-space-container">
+                    <div class="play-space"></div>
+                </div>
+                <div class="game-tool">
+                    <div class="req-space">
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-infor">
+                <div class="timer">
+                    <div class="time-icon ">
+                        <img class="cursor" data-gifffer="assets/clock.gif" alt="">
+                    </div>
+                    <div id ="countdown" class="time play-boild">00:00</div>
+                </div>
+                <div class="player-num play-boild">
+                    <div>Số người chơi: </div>
+                    <div>7</div>
+                </div>
+                <div class="curr-level play-boild">
+                    <div>Level : </div>
+                    <div>1</div>
+                </div>
+                <div class="player-joined">
+
+                   
+
+                </div>
+                <div class="sub-menu  ">
+                    <div class="home">
+                        <i class="fa-solid fa-house"></i>
+                    </div>
+                    <div class="pause ">
+
+                        <i class="fa-solid fa-pause"></i>
+                    </div>
+                    <div class="replay">
+                        <i class="fa-solid fa-rotate-left "></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <!-- infor box -->
+        <div class=""></div>
+    <!-- pop up thua  -->
+   
+    <style>
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.popup-item input[type="checkbox"] {
+    appearance: none;
+    width: 50px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.popup-item input[type="checkbox"]:checked {
+    background-color: #4CAF50;
+}
+
+.popup-item input[type="checkbox"]:before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 19px;
+    height: 19px;
+    background-color: white;
+    border-radius: 50%;
+    transition: left 0.3s;
+}
+
+.popup-item input[type="checkbox"]:checked:before {
+    left: 28px;
+}
+.popup-item span.arrow {
+    font-size: 30px;  
+    margin-left: 20px; 
+}
+
+
+.popup-container {
+    background: white;
+    width: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+
+.popup-title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.popup-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.popup-item .icon {
+    font-size: 20px;
+    margin-right: 1px;
+}
+
+.popup-item span {
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.popup-item input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+.popup-version {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 15px;
+    color: #666;
+}
+
+.popup-links {
+    text-align: center;
+    font-size: 12px;
+    color: blue;
+    margin-top: 5px;
+}
+
+.popup-links a {
+    color: blue;
+    text-decoration: none;
+    margin: 0 1px;
+}
+
+    
+    #close-popup {
+        margin-top: 20px;
+        padding: 5px 10px;
+    }
+   
+.popup-item.switch {
+    transform: translateX(-20px);
+}
+
+    </style>
+
+</body>
+<!-- điều khiển gif file -->
+
+<script type="text/javascript" src="assets/libs/gifffer.min.js"></script>
+
+<script src="script.js"></script>
+
+
+
+</html>
