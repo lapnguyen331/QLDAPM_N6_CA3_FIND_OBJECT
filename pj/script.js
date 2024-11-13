@@ -441,6 +441,17 @@ endGame(score) {
                             }
                         });
                     }
+                      // Âm Thanh
+            if (item.text === 'Âm Thanh') {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        allAudios.forEach(audio => audio.muted = false);
+                    } else {
+                        // Tắt âm thanh cho tất cả các audio
+                        allAudios.forEach(audio => audio.muted = true);
+                    }
+                });
+            }
                 } else {
                    const arrow = document.createElement('span');
     arrow.textContent = '>';
