@@ -14,14 +14,13 @@
     // Biến để theo dõi trạng thái nhạc nền
     let isMusicPlaying = false;
 
-
    
 
 
      const levelMaterial = [
-        { level:1, src: 'assets/background/back.jpg', mission: [1], objPosition: new Array(13),duration:60,minusScore:-10, plusScore:20 },
-        { level:2, src: 'assets/background/back2.jpg', mission: [27], objPosition: new Array(13),duration:50,minusScore:-20,plusScore:30 },
-        { level:3, src: 'assets/background/back3.jpg', mission: [9],objPosition: new Array(13),duration:40, minusScore:-30,plusScore:40}
+        { level:1, src: 'assets/background/back.jpg', mission: [1,2,6,14,16,17,34,33,28,12,24,25,26], objPosition: new Array(13),duration:60,minusScore:-10, plusScore:20,timeReduce :5 },
+        { level:2, src: 'assets/background/back2.jpg', mission: [2,3,4,5,7,8,10,18,19,21,29,30,27], objPosition: new Array(13),duration:50,minusScore:-20,plusScore:30,timeReduce:10 },
+        { level:3, src: 'assets/background/back3.jpg', mission: [16,7,6,17,22,28,35,34,33,26,25,24,9],objPosition: new Array(13),duration:40, minusScore:-30,plusScore:40, timeReduce:15}
 
     ];
     // mission:[1,2,6,14,16,17,34,33,28,12,24,25,26]
@@ -150,6 +149,15 @@
         }
         
     }
+    //hiệu lắc nhẹ khi giảm thời gian
+    function shakeCountdown() {
+        const countdownElement = document.getElementById('countdown');
+        countdownElement.classList.add('shake');
+        setTimeout(() => {
+            countdownElement.classList.remove('shake');
+        }, 500);
+    }
+   
     //cập nhật điểm ->tách riêng ra function nhằm phục vụ nhiều người chơi :>> 
     const scoreBoard = document.querySelector('.score')
     function updateScore(updateScore){
@@ -183,6 +191,7 @@
         }else{
             floatingText.textContent = `+${GameConf.plusScore}`;
             handleClick(true)
+            
         }
         boardImg.appendChild(floatingText);
 
@@ -308,30 +317,6 @@
             this.showHistory(); // Cập nhật giao diện
         }
                 
-
-
-endGame(score) {
-    // Tạo đối tượng lịch sử cho lần chơi này
-    const playRecord = {
-        date: new Date().toLocaleDateString(), // Lấy ngày hiện tại
-        score: score
-    };
-
-    // Lấy lịch sử hiện có từ localStorage
-    let history = JSON.parse(localStorage.getItem('gameHistory')) || [];
-
-    // Thêm điểm mới vào lịch sử
-    history.push(playRecord);
-
-    // Lưu lịch sử cập nhật vào localStorage
-    localStorage.setItem('gameHistory', JSON.stringify(history));
-
-    console.log("Điểm đã được lưu vào lịch sử:", playRecord);
-}
-
-
-
-
         about(){
             console.log('about');
             console.log('show popup');
@@ -666,6 +651,8 @@ form.appendChild(homeButton);
                 this.gameBoard = new GameBoard(this);
                 this.gameBoard.show();
                 this.getScreenInfor();
+                //khởi tạo history để record
+                // this.saveHistory(true)
                 console.log(GameConf);                
                 this.status= GameConf.start
                 console.log("chạy init");
@@ -739,6 +726,8 @@ form.appendChild(homeButton);
             }else{
                 this.showWinPopUp()
             }
+            //lưu lịch sử chơi game
+            // this.saveHistory(false)
             
         }
         //hàm này để vượt qua màn khi user nhấn vào level kế tiếp
@@ -900,22 +889,40 @@ form.appendChild(homeButton);
                  console.log("GIF đã dừng sau " + this.duration + " ms");
             }, timer);
         }
+        reduceTime(amount){
+            // Giảm thời gian mà không dừng đếm ngược
+            if(GameConf.timeRemaining < amount){
+                GameConf.timeRemaining =0
+                console.log('clear interval');
+                console.log(this.countdownInterval);
+                clearInterval(this.countdownInterval);
+            }else{
+                GameConf.timeRemaining = Math.max(0, GameConf.timeRemaining - amount);
+            }
+            shakeCountdown()
+           
+            console.log(`Time reduced by ${amount} seconds, remaining: ${GameConf.timeRemaining}`);
+        }
         //handle click của người dùng trên board 
         //--> đã ngăn chặn lan truyền tới thẻ con và toàn bộ document
         clickHandler(){
-            boardImg.addEventListener('click',function(event){
+            boardImg.addEventListener('click',(event)=>{
                 pointFloatEffect(event,true)
                 if(GameConf.score > 0){
                     updateScore(GameConf.minusScore)
-                    console.log("click ra ngoài rồi");
+                    
 
                 }
-                
+                    console.log("click ra ngoài rồi");
+                    console.log(this);
+                    let rtime = levelMaterial[GameConf.currLevel -1].timeReduce
+                    this.reduceTime(rtime)
+
                 event.stopPropagation();//tránh lan truyền event
 
             })
         }
-        // Phương thức để dừng game
+        // Phương thức để dừng game khi thua thôi, còn khi thắng thì qua doWin() nha :>>
         endGame() {
             if (this.isGameOver) return; // Tránh gọi nhiều lần
             this.isGameOver = true;
@@ -927,7 +934,26 @@ form.appendChild(homeButton);
 
             //chặn click image
             this.getObjElement().forEach(e => e.classList.add('disabled'))
-            // this.resetGame(); // Reset game nếu muốn chơi lại
+            //ghi lịch sử
+            // this.saveHistory(false)
+             
+        }
+        saveHistory(isFirstTime){
+            //Lấy lịch sử hiện có từ localStorage
+            let history = JSON.parse(localStorage.getItem('gameHistory') )|| [];
+            
+            if(isFirstTime){
+                console.log('his đầu'+history);
+                history[0] = this.players[0].name
+                history.push([GameConf.score])
+            }else{
+                history[1].push(GameConf.score)
+            }
+            console.log('cập nhật lại history'+ history);
+            // Lưu lịch sử cập nhật vào localStorage
+            localStorage.setItem('gameHistory',JSON.parse( history));
+
+            console.log("Điểm đã được lưu vào lịch sử:"+ history);
         }
         //phương thức show popup khi thua
         showLosePopUp() {
@@ -1012,6 +1038,8 @@ form.appendChild(homeButton);
 
 
         }
+        
+        
         // Phương thức bắt đầu đếm ngược
         startCountdown() {
             this.countdownInterval = setInterval(() =>{
