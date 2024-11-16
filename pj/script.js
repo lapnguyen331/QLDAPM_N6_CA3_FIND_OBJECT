@@ -484,7 +484,7 @@
             videoTag.setAttribute("controls", true);   // Hiển thị các nút điều khiển cho video
             videoTag.autoplay='true'
             const source = document.createElement('source')
-            source.setAttribute("src", "Hẹn Em Ở Lần Yêu Thứ 2 - Nguyenn x @Dangtuanvu.Original  .mp4");   // Đường dẫn đến file video
+            source.setAttribute("src", "assets/music/HUONG DAN CHOI.mp4");   // Đường dẫn đến file video
             source.setAttribute("type", "video/mp4");          // Định dạng của video
 
             videoTag.appendChild(source)
